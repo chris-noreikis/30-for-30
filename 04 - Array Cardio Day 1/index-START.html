@@ -31,17 +31,29 @@
 
     // Array.prototype.filter()
     // 1. Filter the list of inventors for those who were born in the 1500's
+    console.error("=============> 1. ", inventors.filter((i) => i.year >= 1500 && i.year < 1600));
 
     // Array.prototype.map()
     // 2. Give us an array of the inventors' first and last names
+    console.error("=============> 2. ", inventors.map((i) => i.first + ' ' + i.last));
 
     // Array.prototype.sort()
     // 3. Sort the inventors by birthdate, oldest to youngest
+    let ordered = inventors.sort((i1, i2) => i1.year - i2.year);
+    console.table(ordered);
 
     // Array.prototype.reduce()
     // 4. How many years did all the inventors live?
+    console.error("=============> 4 ", inventors.reduce((accumulator, current) => {
+      return accumulator + (current.passed - current.year);
+    }, 0));
 
     // 5. Sort the inventors by years lived
+    console.table(inventors.sort((i1, i2) => {
+      const years1 = i1.passed - i1.year;
+      const years2 = i2.passed - i1.year;
+      return years1 > years2 ? 1 : -1;
+    }));
 
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
     // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
@@ -49,10 +61,22 @@
 
     // 7. sort Exercise
     // Sort the people alphabetically by last name
+    console.error("=============> 7", people.sort((i1, i2) => {
+      const char1 = i1.split(', ')[0];
+      const char2 = i2.split(', ')[0];
+      return i1 > i2 ? 1 : -1;
+    }));
 
     // 8. Reduce Exercise
     // Sum up the instances of each of these
     const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck' ];
+    console.table(data.reduce((accumulator, current) => {
+      console.error("=============> accumulator: ", accumulator);
+      console.error("=============> current: ", current);
+      accumulator[current] = accumulator[current] || 0;
+      accumulator[current] = accumulator[current] + 1;
+      return accumulator;
+    }, {}));
 
   </script>
 </body>
