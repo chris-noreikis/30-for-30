@@ -26,6 +26,12 @@
       misc styles, nothing to do with CSS variables
     */
 
+    :root {
+      --spacing: 10px;
+      --blur: 10px;
+      --base: #ffc600;
+    }
+
     body {
       text-align: center;
       background: #193549;
@@ -42,9 +48,22 @@
     input {
       width: 100px;
     }
+
+    img {
+      padding: var(--spacing);
+      filter: blur(var(--blur));
+      background-color: var(--base);
+    }
   </style>
 
   <script>
+    document.querySelectorAll('input').forEach((input) => {
+      input.addEventListener('input', (e) => {
+        const suffix = e.target.getAttribute('data-sizing') || '';
+        let propertyName = e.target.getAttribute('name');
+        document.documentElement.style.setProperty('--' + propertyName, e.target.value + suffix);
+      });
+    });
   </script>
 
 </body>
