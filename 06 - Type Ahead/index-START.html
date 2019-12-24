@@ -1,22 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Type Ahead 👀</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <form class="search-form">
+<form class="search-form">
     <input type="text" class="search" placeholder="City or State">
     <ul class="suggestions">
-      <li>Filter for a city</li>
-      <li>or a state</li>
+        <li>Filter for a city</li>
+        <li>or a state</li>
     </ul>
-  </form>
+</form>
 <script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  let cities;
 
+  function loadCities() {
+    fetch(endpoint)
+      .then((c) => c.json())
+      .then((parsedJson) => {
+        cities = parsedJson;
+      });
+  }
+
+  function getMatchedCities(userInputValue) {
+    userInputValue = userInputValue.toLowerCase();
+    const userInputRegex = new RegExp(userInputValue, 'gi');
+    return cities.filter((c) => {
+      return userInputRegex.test(c.city) || userInputRegex.test(c.state);
+    }).sort((a, b) => a.rank > b.rank ? 1 : -1);
+  }
+
+  function createElementForCity(city, value) {
+    const regex = new RegExp(value, 'gi');
+    const cityName = city.city.replace(regex, `<span class="hl">${value}</span>`);
+    const stateName = city.state.replace(regex, `<span class="hl">${value}</span>`);
+    return `
+        <li>
+            <span class='name'>${cityName}, ${stateName}</span>
+            <span class='population'>${Number(city.population).toLocaleString()}</span>
+        </li>
+    `;
+  }
+
+  function displayMatchingCities() {
+    let cities = getMatchedCities(this.value);
+    let suggestionsElement = document.querySelector('.suggestions');
+    suggestionsElement.innerHTML = '';
+    const mappedCities = cities.map((c) => createElementForCity(c, this.value));
+    suggestionsElement.innerHTML = mappedCities.join('');
+  }
+
+  document.addEventListener("DOMContentLoaded", loadCities);
+  document.querySelector('.search').addEventListener('input', displayMatchingCities)
 </script>
 </body>
 </html>
