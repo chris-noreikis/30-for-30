@@ -1,18 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>HTML5 Canvas</title>
+    <meta charset="UTF-8">
+    <title>HTML5 Canvas</title>
 </head>
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+  const canvas = document.querySelector('canvas');
+  const ctx = canvas.getContext("2d");
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  let isDrawing = false;
+
+  canvas.addEventListener('mousemove', handleMouseMove);
+  canvas.addEventListener('mousedown', handleMouseDown);
+  canvas.addEventListener('mouseup', handleMouseUp);
+
+  let lastX = null;
+  let lastY = null;
+  let isGoingUp = false;
+  let hue = 0;
+
+  function handleMouseMove(e) {
+    if (isDrawing) {
+      ctx.beginPath();
+      ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+      ctx.moveTo(lastX, lastY);
+
+      ctx.lineTo(e.clientX, e.clientY);
+      ctx.stroke();
+      lastX = e.clientX;
+      lastY = e.clientY;
+
+      if (isGoingUp) {
+        ctx.lineWidth++;
+        hue++;
+      } else {
+        ctx.lineWidth--;
+        hue--;
+      }
+
+      console.error("=============> hue: ", hue);
+      if (hue >= 180) {
+        isGoingUp = false;
+      } else if (hue <= 0) {
+        isGoingUp = true;
+      }
+    }
+  }
+
+  function handleMouseDown(e) {
+    lastX = e.clientX;
+    lastY = e.clientY;
+    isDrawing = true;
+  }
+
+  function handleMouseUp() {
+    isDrawing = false;
+  }
 </script>
 
 <style>
-  html, body {
-    margin: 0;
-  }
+    html, body {
+        margin: 0;
+    }
 </style>
 
 </body>
